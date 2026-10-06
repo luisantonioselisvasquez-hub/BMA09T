@@ -1,0 +1,121 @@
+SUDOKU
+#include <stdio.h>
+
+#define N 9
+
+void imprimirSudoku(int sudoku[N][N]);
+int esValido(int sudoku[N][N], int fila, int columna, int numero);
+int resolverSudoku(int sudoku[N][N]);
+
+int main() {
+
+    int sudoku[N][N] = {
+        {5, 3, 0, 0, 7, 0, 0, 0, 0},
+        {6, 0, 0, 1, 9, 5, 0, 0, 0},
+        {0, 9, 8, 0, 0, 0, 0, 6, 0},
+
+        {8, 0, 0, 0, 6, 0, 0, 0, 3},
+        {4, 0, 0, 8, 0, 3, 0, 0, 1},
+        {7, 0, 0, 0, 2, 0, 0, 0, 6},
+
+        {0, 6, 0, 0, 0, 0, 2, 8, 0},
+        {0, 0, 0, 4, 1, 9, 0, 0, 5},
+        {0, 0, 0, 0, 8, 0, 0, 7, 9}
+    };
+
+    printf("SUDOKU SIN BACKTRACKING\n\n");
+
+    printf("Sudoku inicial:\n");
+    imprimirSudoku(sudoku);
+
+    if (resolverSudoku(sudoku)) {
+        printf("\nSudoku resuelto:\n");
+        imprimirSudoku(sudoku);
+    } else {
+        printf("\nNo existe solucion.\n");
+    }
+
+
+    return 0;
+}
+
+void imprimirSudoku(int sudoku[N][N]) {
+    int i, j;
+
+    for (i = 0; i < N; i++) {
+        for (j = 0; j < N; j++) {
+            printf("%d ", sudoku[i][j]);
+
+            if (j == 2 || j == 5)
+                printf("| ");
+        }
+
+        printf("\n");
+
+        if (i == 2 || i == 5)
+            printf("---------------------\n");
+    }
+}
+
+int esValido(int sudoku[N][N], int fila, int columna, int numero) {
+    int i, j;
+    int inicioFila, inicioColumna;
+
+    /* Revisar fila */
+    for (j = 0; j < N; j++) {
+        if (sudoku[fila][j] == numero)
+            return 0;
+    }
+
+    /* Revisar columna */
+    for (i = 0; i < N; i++) {
+        if (sudoku[i][columna] == numero)
+            return 0;
+    }
+
+    /* Revisar subcuadro 3x3 */
+    inicioFila = fila - fila % 3;
+    inicioColumna = columna - columna % 3;
+
+    for (i = inicioFila; i < inicioFila + 3; i++) {
+        for (j = inicioColumna; j < inicioColumna + 3; j++) {
+            if (sudoku[i][j] == numero)
+                return 0;
+        }
+    }
+
+    return 1;
+}
+
+int resolverSudoku(int sudoku[N][N]) {
+    int fila, columna;
+    int numero;
+
+    // Buscar una casilla vacia 
+    for (fila = 0; fila < N; fila++) {
+        for (columna = 0; columna < N; columna++) {
+
+            if (sudoku[fila][columna] == 0) {
+
+                // Probar numeros del 1 al 9 
+                for (numero = 1; numero <= 9; numero++) {
+
+                    if (esValido(sudoku, fila, columna, numero)) {
+                        // Colocar numero 
+                        sudoku[fila][columna] = numero;
+
+                        // Intentar resolver el resto
+                        if (resolverSudoku(sudoku)) {
+                            return 1;
+                        }
+                        // Si no funciona, regresar 
+                        sudoku[fila][columna] = 0;
+                    }
+                }
+                return 0;
+            }
+        }
+    }
+    // No quedan casillas vacias
+    return 1;
+}

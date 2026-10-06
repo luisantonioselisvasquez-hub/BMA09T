@@ -1,0 +1,69 @@
+N-REINAS
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int N;
+int *tablero;
+long soluciones = 0;
+int Mostrar_tableros = 3;
+
+int es_seguro(int fila, int col) {
+    int i;
+    for (i = 0; i < fila; i++) {
+        if (tablero[i] == col || abs(tablero[i] - col) == fila - i)
+            return 0;
+    }
+    return 1;
+}
+
+void imprimir_solucion(void) {
+    int i, j;
+    printf("Solucion #%ld:\n", soluciones);
+    for (i = 0; i < N; i++) {
+        for (j = 0; j < N; j++) {
+            if (tablero[i] == j)
+                printf(" Q");
+            else
+                printf(" .");
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+void resolver(int fila) {
+    int col;
+    if (fila == N) {
+        soluciones++;
+        if (soluciones <= Mostrar_tableros)
+            imprimir_solucion();
+        return;
+    }
+    for (col = 0; col < N; col++) {
+        if (es_seguro(fila, col)) {
+            tablero[fila] = col;  
+            resolver(fila + 1);  
+        }
+    }
+}
+
+int main() {
+    printf("Ingrese N (numero de reinas): ");
+    if (scanf("%d", &N) != 1 || N < 1) {
+        printf("Valor invalido\n");
+        return 1;
+    }
+    tablero = (int *) malloc(N * sizeof(int));
+    if (tablero == NULL) {
+        printf("Sin memoria\n");
+        return 1;
+    }
+
+    resolver(0);
+    printf("N = %d -> total de soluciones: %ld\n", N, soluciones);
+
+    free(tablero);
+    system("pause");
+    return 0;
+}

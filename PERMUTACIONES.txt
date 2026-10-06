@@ -1,0 +1,74 @@
+PERMUTACIONES
+#include<stdio.h>
+#include<math.h>
+#include<conio.h>
+
+void leerArreglo(int a[], int tamano);
+void mostrarArreglo(int a[], int tamano);
+
+void intercambiar(int *a, int *b);
+void permutaciones(int a[], int inicio, int n);
+
+
+int main(){
+	
+	int n=3;
+	int numeros[n];
+	
+	leerArreglo(numeros, n);
+	
+	mostrarArreglo(numeros, n);
+	
+	printf("\n\nPermutaciones del numero introducido: \n");
+	
+	permutaciones(numeros,0,n);
+	
+	return 0;
+}
+
+void leerArreglo(int a[], int tamano){
+	for(int i=0;i<tamano;i++){
+		printf("Ingresa el valor para la posicion %d: ",i);
+		scanf("%d", &a[i]);
+	}
+}
+
+void mostrarArreglo(int a[], int tamano){
+	
+	printf("\nLos numeros ingresados son: \n");
+	
+	for(int i=0;i<tamano;i++){
+		printf("%d", a[i]);
+		
+		if(i<tamano-1){
+			printf(" , ");	
+		}
+	}
+	
+	printf("\n\nEl numero es: ");
+	for(int i=0;i<tamano;i++){
+		printf("%d", a[i]);
+	}
+}
+
+
+void intercambiar(int *a, int *b){
+	int aux=*a;
+	*a=*b;
+	*b=aux;
+}
+
+void permutaciones(int a[], int inicio, int n){
+	if(inicio==n){
+		for(int i=0;i<n;i++){
+			printf("%d", a[i]);
+		}
+		printf("\n");
+		return;
+	}
+	for(int i=inicio; i<n; i++){
+		intercambiar(&a[inicio], &a[i]);
+		permutaciones(a, inicio+1, n);
+		intercambiar(&a[inicio], &a[i]);
+	}
+}
