@@ -1,0 +1,142 @@
+Base del codigo empleado:
+#include <iostream>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+// 1. REPRESENTACIÓN DE GRAFO
+void construirGrafoBase(vector<vector<int>>& adj) {
+    adj.resize(6);
+    adj[0].push_back(1); adj[0].push_back(2);
+    adj[1].push_back(0); adj[1].push_back(3); adj[1].push_back(4);
+    adj[2].push_back(0); adj[2].push_back(5);
+    adj[3].push_back(1);
+    adj[4].push_back(1); adj[4].push_back(5);
+    adj[5].push_back(2); adj[5].push_back(4);
+}
+
+// 2. RECORRIDO BFS (ANCHURA)
+void bfs(int inicio, const vector<vector<int>>& adj) {
+    int n = adj.size();
+    vector<bool> visitado(n, false);
+    queue<int> cola;
+    visitado[inicio] = true;
+    cola.push(inicio);
+
+    cout << "Orden de recorrido BFS por niveles: ";
+    while (!cola.empty()) {
+        int u = cola.front(); cola.pop();
+        cout << u << " ";
+        for (int v : adj[u]) {
+            if (!visitado[v]) {
+                visitado[v] = true;
+                cola.push(v);
+            }
+        }
+    }
+    cout << "\n";
+}
+
+// 3. RECORRIDO DFS (PROFUNDIDAD)
+void dfsAux(int u, const vector<vector<int>>& adj, vector<bool>& visitado) {
+    visitado[u] = true;
+    cout << u << " ";
+    for (int v : adj[u]) {
+        if (!visitado[v]) dfsAux(v, adj, visitado);
+    }
+}
+
+void dfs(int inicio, const vector<vector<int>>& adj) {
+    vector<bool> visitado(adj.size(), false);
+    cout << "Orden de recorrido DFS por ramas: ";
+    dfsAux(inicio, adj, visitado);
+    cout << "\n";
+}
+
+// 4. COMPONENTES CONEXAS
+void encontrarComponentes(const vector<vector<int>>& adj) {
+    int n = adj.size();
+    vector<bool> visitado(n, false);
+    int numComp = 0;
+    cout << "Componentes Conexas encontradas:\n";
+    for (int i = 0; i < n; i++) {
+        if (!visitado[i]) {
+            numComp++;
+            cout << "  Componente " << numComp << ": [ ";
+            dfsAux(i, adj, visitado);
+            cout << "]\n";
+        }
+    }
+    cout << "Total de componentes conexas: " << numComp << "\n";
+}
+
+// 5. DETECCIÓN DE CICLOS CON TRAZA PASO A PASO (3 COLORES)
+enum Color { BLANCO = 0, GRIS = 1, NEGRO = 2 };
+
+bool dfsCiclo(int u, const vector<vector<int>>& adjDir, vector<Color>& color) {
+    color[u] = GRIS;
+    cout << "  -> Nodo " << u << " pasa a estado GRIS (en exploracion)\n";
+    
+    for (int v : adjDir[u]) {
+        if (color[v] == GRIS) {
+            cout << "  ! ALERTA: Arista hacia nodo " << v << " que ya esta GRIS. ¡CICLO DETECTADO!\n";
+            return true;
+        }
+        if (color[v] == BLANCO) {
+            cout << "  -> Evaluando vecino " << v << " (estado BLANCO, sin visitar)...\n";
+            if (dfsCiclo(v, adjDir, color)) return true;
+        }
+    }
+    
+    color[u] = NEGRO;
+    cout << "  -> Nodo " << u << " pasa a estado NEGRO (finalizado)\n";
+    return false;
+}
+
+bool detectarCiclo(const vector<vector<int>>& adjDir) {
+    int n = adjDir.size();
+    vector<Color> color(n, BLANCO);
+    for (int i = 0; i < n; i++) {
+        if (color[i] == BLANCO) {
+            if (dfsCiclo(i, adjDir, color)) return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    cout << "========================================================\n";
+    cout << "  GRUPO 5: ALGORITMOS EN GRAFOS EN DEV-C++ (C++11/17)\n";
+    cout << "========================================================\n\n";
+
+    vector<vector<int>> grafo;
+    construirGrafoBase(grafo);
+
+    cout << "--- 1. RECORRIDOS EN GRAFO CONEXO ---\n";
+    bfs(0, grafo);
+    dfs(0, grafo);
+    cout << "\n";
+
+    vector<vector<int>> grafoDesconectado(5);
+    grafoDesconectado[0].push_back(1); grafoDesconectado[1].push_back(0);
+    grafoDesconectado[2].push_back(3); grafoDesconectado[3].push_back(2);
+
+    cout << "--- 2. CONECTIVIDAD Y COMPONENTES CONEXAS ---\n";
+    encontrarComponentes(grafoDesconectado);
+    cout << "\n";
+
+    vector<vector<int>> grafoDirigidoCiclo(3);
+    grafoDirigidoCiclo[0].push_back(1);
+    grafoDirigidoCiclo[1].push_back(2);
+    grafoDirigidoCiclo[2].push_back(0);
+
+    cout << "--- 3. DETECCIÓN DE CICLOS EN GRAFO DIRIGIDO ---\n";
+    if (detectarCiclo(grafoDirigidoCiclo)) {
+        cout << "\nResultado final: ¡Se ha DETECTADO un ciclo en el grafo dirigido!\n";
+    } else {
+        cout << "\nResultado final: El grafo dirigido es ACICLICO (DAG).\n";
+    }
+
+    return 0;
+}
