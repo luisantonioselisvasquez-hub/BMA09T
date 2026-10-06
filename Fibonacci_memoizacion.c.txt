@@ -1,0 +1,42 @@
+#include <stdio.h>
+
+#define MAX 100
+
+long long memo[MAX];
+
+long long fibonacci(int n) {
+    // Caso base
+    if (n <= 1) {
+        return n;
+    }
+
+    // Si ya calculamos fibonacci(n), lo reutilizamos
+    if (memo[n] != -1) {
+        return memo[n];
+    }
+
+    // Calculamos y guardamos el resultado
+    memo[n] = fibonacci(n - 1) + fibonacci(n - 2);
+
+    return memo[n];
+}
+
+int main() {
+    int n, i;
+
+    // Inicializamos el arreglo memo con -1
+    for (i = 0; i < MAX; i++) {
+        memo[i] = -1;
+    }
+
+    printf("Ingrese la posicion de Fibonacci: ");
+    scanf("%d", &n);
+
+    if (n < 0 || n >= MAX) {
+        printf("Numero fuera de rango.\n");
+    } else {
+        printf("Fibonacci(%d) = %lld\n", n, fibonacci(n));
+    }
+
+    return 0;
+}
