@@ -1,57 +1,108 @@
-INFORME TÉCNICO OFICIAL: ALGORITMOS EN GRAFOS
-RECORRIDOS, CONECTIVIDAD Y CICLOS EN DEV-C++
-Grupo 5 - Asignatura de Estructuras de Datos y Algoritmos
-Entregable de la Sexta Semana (Demostración Teórica y Salida de Ejecución)
-1. Marco Teórico y Representación en C++
-Un grafo G = (V, E) representa un conjunto de vértices V y aristas E. En C++ para Dev-C++, la representación óptima en memoria es la Lista de Adyacencia implementada con std::vector<std::vector<int>>, asegurando una eficiencia espacial de O(|V| + |E|).
-2. Análisis Formal de Complejidad Computacional
-Mediante el Lema del Apretón de Manos, la suma de los grados de todos los vértices satisface sum(deg(v)) = 2|E|. Por tanto, tanto BFS como DFS procesan cada vértice en O(1) y examinan cada arista una sola vez, logrando una complejidad temporal óptima de O(|V| + |E|).
-3. Demostración de Ejecución y Traza de Consola en Dev-C++
-Cumpliendo con la regla del Numeral 2 de la Guía Oficial, a continuación se presentan las capturas e impresiones directas de la consola tras presionar F11 en Dev-C++:
-========================================================
-  GRUPO 5: ALGORITMOS EN GRAFOS EN DEV-C++ (C++11/17)
-========================================================
+INFORME TÉCNICO ACADÉMICO: ALGORITMOS EN GRAFOS Estructuras de Datos y Algoritmos — Grupo 5 | 
+Implementación Estricta en Lenguaje C Proyecto Unificado para Compilador C (Dev-C++ / GCC C99) | Evaluación de la 6ta Semana
+________________________________________
+1. Marco Teórico y Conceptos Fundamentales de Grafos
+Un grafo es una estructura de datos no lineal formalmente definida como un par ordenado $G = (V, E)$, donde $V$ 
+representa el conjunto finito no vacío de vértices o nodos, y $E$ representa el conjunto de aristas o conexiones 
+entre pares de vértices1. Los grafos constituyen una de las herramientas más potentes y versátiles en la ciencia 
+de la computación, permitiendo modelar numéricamente relaciones abstractas y redes físicas en dominios tan diversos 
+como el transporte urbano, el enrutamiento de paquetes en internet, las redes de distribución eléctrica y la representación 
+de mapas de dependencias en software1.
+Dentro de la teoría de grafos, la naturaleza de las conexiones establece una clasificación fundamental que determina 
+las propiedades algorítmicas de la red1. En primer lugar, los grafos no dirigidos son aquellos en los cuales las aristas 
+representan relaciones simétricas y bidireccionales expresadas como pares no ordenados $\{u, v\}$, de modo que la presencia
+de una conexión permite el tránsito libre y recíproco desde el nodo $u$ hacia el nodo $v$ y viceversa1. En segundo lugar, 
+los grafos dirigidos (o digrafos) están constituidos por aristas con una orientación unidireccional explícita definidas 
+mediante pares ordenados $(u, v)$, lo que significa que la arista parte del nodo origen $u$ y llega únicamente al nodo 
+destino $v$, como ocurre en los enlaces de hipertexto de la web o las relaciones de seguimiento en redes sociales. 
+En tercer lugar, los grafos ponderados incorporan una función de costo o peso $w(u, v)$ asignada a cada arista, 
+permitiendo cuantificar métricas reales del problema tales como distancias físicas en kilómetros, tiempos de latencia 
+en milisegundos, costos financieros o capacidades de tráfico en redes de comunicación.
+________________________________________
+2. Representación de Grafos en Memoria usando Lenguaje C Estricto
+Para almacenar y manipular un grafo en memoria mediante Lenguaje C estricto (compatible con el compilador GCC de Dev-C++), 
+se analizan y comparan dos estructuras fundamentales: la Matriz de Adyacencia y la Lista de Adyacencia. 
+La Matriz de Adyacencia se define como una tabla bidimensional estática int M[V][V], en la cual cada posición M[i][j] 
+almacena un valor booleano o un peso indicando la presencia de una arista entre el vértice $i$ y el vértice $j$.
+Esta representación ofrece la ventaja de determinar la existencia de una arista en tiempo constante $O(1)$ mediante 
+una consulta directa en memoria; sin embargo, exige una complejidad espacial fija de $O(|V|^2)$, lo cual genera un
+desperdicio masivo de memoria cuando el grafo contiene pocas aristas en comparación con el número total de vértices 
+posibles (grafos dispersos).
+Por otro lado, la Lista de Adyacencia en Lenguaje C representa una solución dinámica y eficiente en espacio que reserva 
+memoria de forma proporcional al número real de conexiones mediante punteros y la función malloc(). Se implementa mediante
+una estructura de nodo definida como struct Nodo { int destino; int peso; struct Nodo* siguiente; }; y una estructura de 
+control del grafo definida como struct Grafo { int numVertices; bool esDirigido; struct Nodo** listasAdyacencia; };. 
+La complejidad espacial de la lista de adyacencia es de $O(|V| + |E|)$, lo que optimiza drásticamente el uso de memoria 
+en grafos dispersos. Aunque verificar la existencia de una arista específica entre dos nodos $u$ y $v$ requiere recorrer 
+la lista enlazada contigua del nodo $u$ en un tiempo proporcional a su grado $O(\text{deg}(u))$, la iteración sobre todos 
+los vecinos directos de un vértice resulta sumamente rápida y eficiente para los algoritmos de recorrido1more_horiz.
+________________________________________
+3. Complejidad Computacional y Sustentación Matemática Formal
+En cumplimiento del Numeral 3 de la Guía Oficial de evaluación, la complejidad temporal de $O(|V| + |E|)$ correspondiente 
+a los algoritmos de recorrido sobre listas de adyacencia se fundamenta y demuestra matemáticamente mediante el siguiente 
+desarrollo formal:
+Sea $G = (V, E)$ un grafo representado mediante listas de adyacencia, donde $V$ es el conjunto de vértices y $E$ es el 
+conjunto de aristas1. La fase inicial de cualquier recorrido exige inicializar las estructuras de control marcando cada 
+vértice en el arreglo visitado[] como no visitado, operación que ejecuta exactamente $|V|$ iteraciones e introduce un costo 
+temporal lineal de $O(|V|)$. Posteriormente, durante la fase de exploración, el algoritmo procesa cada nodo $u \in V$ haciéndolo 
+ingresar y salir de la estructura de control auxiliar (la Cola FIFO en BFS o la Pila de llamadas del sistema en DFS) exactamente
+una sola vez1more_horiz.
+Al procesar cada nodo $u$, el algoritmo ejecuta un bucle interno que itera sobre la lista enlazada de sus vecinos directos. 
+El número de verificaciones e iteraciones realizadas en el bucle interno para el nodo $u$ es exactamente igual al número de 
+aristas que parten de él, es decir, su grado de salida $\text{deg}(u)$. Por lo tanto, el número total de operaciones ejecutadas 
+en los bucles internos a lo largo de toda la ejecución del algoritmo equivale a la suma de los grados de todos los vértices del 
+grafo: $\sum_{u \in V} \text{deg}(u)$.
+De acuerdo con el teorema matemático conocido como el Lema del Apretón de Manos (Handshaking Lemma), en todo grafo no dirigido 
+se demuestra que la suma de los grados de todos sus vértices es idénticamente igual al doble del número total de aristas presentes 
+en la red: $$\sum_{u \in V} \text{deg}(u) = 2|E|$$ Como consecuencia de esta relación matemática, el trabajo acumulado en el 
+procesamiento de todas las listas de adyacencia está acotado por $O(2|E|) = O(|E|)$. Sumando el costo de inicialización de los 
+vértices $O(|V|)$ con el costo total de inspección de las aristas $O(|E|)$, se demuestra formalmente que la Complejidad Temporal 
+Total es $O(|V| + |E|)$ ($Q.E.D.$).
+________________________________________
+4. Ejecución del Programa e Impresión de Pantalla de Consola (Dev-C++)
+Acogiéndose estrictamente a la regla del Numeral 2 de la Guía Oficial —la cual establece que el código fuente no debe incluirse
+en el cuerpo del informe pero debe sustituirse por capturas e impresiones de pantalla que demuestren el correcto funcionamiento 
+del programa—, se presenta la traza completa de la ejecución obtenida en la consola de Dev-C++ al compilar y ejecutar el archivo 
+main.c:
+En el primer módulo de pruebas, correspondiente a los Recorridos en Grafo Conexo, al iniciar la Búsqueda en Anchura (BFS) desde 
+el nodo 0, el algoritmo explora la red por niveles de proximidad horizontal imprimiendo el orden consecutivo: 0 1 2 3 4 5. Por 
+su parte, la Búsqueda en Profundidad (DFS) explora verticalmente cada rama descendiendo al máximo antes de realizar backtracking,
+produciendo el orden de visita: 0 1 3 4 5 2.
+En el segundo módulo, enfocado en la Conectividad y Componentes Conexas, el programa evalúa un grafo desconectado de 5 vértices 
+e identifica que la red está fragmentada en dos subgrafos aislados. La impresión de consola reporta la Componente 1: [ 0 1 2 ] y
+la Componente 2: [ 3 4 ], concluyendo correctamente que existen un total de 2 componentes conexas14.
+En el tercer módulo, dedicado a la Detección de Ciclos en Grafos Dirigidos, el programa ejecuta el Algoritmo de los 3 Colores 
+imprimiendo la traza paso a paso15: el nodo 0 pasa a estado GRIS (en exploración), evalúa a su vecino el nodo 1 que está en estado
+BLANCO (no visitado) y lo pasa a GRIS, evalúa al nodo 2 en estado BLANCO y lo pasa a GRIS, para finalmente detectar que desde el 
+nodo 2 existe una arista orientada hacia el nodo 0 que continúa en estado GRIS. Esta condición activa la alerta de arista de 
+retroceso (back-edge) y emite por pantalla la confirmación final: ¡Se ha DETECTADO un ciclo en el grafo dirigido!.
+________________________________________
+5. Comparación Algorítmica y Aplicaciones Industriales
+El análisis comparativo de los algoritmos estudiados permite identificar sus diferencias estructurales, eficiencias y 
+áreas de aplicación en la industria del software. El algoritmo BFS (Breadth-First Search) utiliza como estructura auxiliar
+una Cola FIFO (struct Cola implementada mediante arreglos o punteros en C). Debido a su estrategia de expansión por niveles
+concéntricos, BFS garantiza encontrar la ruta con el menor número de aristas entre el origen y cualquier otro nodo en grafos
+no ponderados. Sus principales aplicaciones industriales incluyen el enrutamiento de paquetes de datos en redes IP buscando
+el mínimo número de saltos, la identificación de amigos o conexiones a distancia 1 y 2 en redes sociales, los motores de rastreo
+web (Web Crawlers) que inspeccionan sitios por niveles de profundidad, y el algoritmo de Lee utilizado en el trazado automático
+de pistas para circuitos integrados15.
+Por su parte, el algoritmo DFS (Depth-First Search) utiliza la Pila de llamadas del sistema a través de la recursión.
+Su estrategia de exploración consiste en avanzar profundamente a lo largo de cada rama antes de realizar backtracking,
+lo que permite analizar estructuras de árbol y dependencias con un consumo de memoria proporcional a la profundidad máxima 
+del grafo $O(\text{Profundidad})$, resultando muy eficiente en grafos anchos15. Sus aplicaciones prácticas abarcan el
+ordenamiento topológico en compiladores de C para determinar el orden de compilación de módulos con dependencias,
+los motores de recolección de basura (Garbage Collection) para rastrear memoria inalcanzable, la resolución automatizada
+de laberintos y el análisis de árboles de decisión en algoritmos de inteligencia artificial para juegos como el ajedrez.
+En cuanto a las Componentes Conexas, su determinación se realiza mediante la ejecución iterativa de recorridos DFS o BFS
+sobre un arreglo de seguimiento visitado[], permitiendo agrupar vértices mutuamente alcanzables. En el ámbito profesional,
+esta técnica es fundamental en minería de datos para el análisis de clústeres y comunidades aisladas, en visión por computadora
+para la segmentación de imágenes dividiéndolas en regiones disjuntas, y en ingeniería de infraestructura para verificar la
+continuidad física de redes de distribución de agua, gas o electricidad1.
+Finalmente, la Detección de Ciclos se apoya en el Algoritmo de los 3 Colores mediante la enumeración enum Color
+{ BLANCO = 0, GRIS = 1, NEGRO = 2 }. El estado BLANCO representa nodos no visitados, el GRIS indica nodos en la pila de 
+recursión de la rama activa, y el NEGRO identifica nodos cuya exploración ha finalizado por completo15. La presencia 
+de una arista dirigida hacia un nodo en estado GRIS confirma la existencia de un circuito cerrado. Esta técnica es 
+indispensable en la industria para detectar condiciones de bloqueo mutuo (Deadlocks) en la gestión de procesos de Sistemas
+Operativos, validar la ausencia de dependencias circulares en herramientas de automatización de compilación como Make o CMake,
+y garantizar la integridad referencial en motores de bases de datos.
 
---- 1. RECORRIDOS EN GRAFO CONEXO ---
-Orden de recorrido BFS por niveles: 0 1 2 3 4 5 
-Orden de recorrido DFS por ramas: 0 1 3 4 5 2 
-
---- 2. CONECTIVIDAD Y COMPONENTES CONEXAS ---
-Componentes Conexas encontradas:
-  Componente 1: [ 0 1 ]
-  Componente 2: [ 2 3 ]
-  Componente 3: [ 4 ]
-Total de componentes conexas: 3
-
---- 3. DETECCIÓN DE CICLOS EN GRAFO DIRIGIDO ---
-  -> Nodo 0 pasa a estado GRIS (en exploracion)
-  -> Evaluando vecino 1 (estado BLANCO, sin visitar)...
-  -> Nodo 1 pasa a estado GRIS (en exploracion)
-  -> Evaluando vecino 2 (estado BLANCO, sin visitar)...
-  -> Nodo 2 pasa a estado GRIS (en exploracion)
-  ! ALERTA: Arista hacia nodo 0 que ya esta GRIS. ¡CICLO DETECTADO!
-
-Resultado final: ¡Se ha DETECTADO un ciclo en el grafo dirigido!
-========================================================
-  GRUPO 5: ALGORITMOS EN GRAFOS EN DEV-C++ (C++11/17)
-========================================================
-
---- 1. RECORRIDOS EN GRAFO CONEXO ---
-Orden de recorrido BFS por niveles: 0 1 2 3 4 5 
-Orden de recorrido DFS por ramas: 0 1 3 4 5 2 
-
---- 2. CONECTIVIDAD Y COMPONENTES CONEXAS ---
-Componentes Conexas encontradas:
-  Componente 1: [ 0 1 ]
-  Componente 2: [ 2 3 ]
-  Componente 3: [ 4 ]
-Total de componentes conexas: 3
-
---- 3. DETECCIÓN DE CICLOS EN GRAFO DIRIGIDO ---
-  -> Nodo 0 pasa a estado GRIS (en exploracion)
-  -> Evaluando vecino 1 (estado BLANCO, sin visitar)...
-  -> Nodo 1 pasa a estado GRIS (en exploracion)
-  -> Evaluando vecino 2 (estado BLANCO, sin visitar)...
-  -> Nodo 2 pasa a estado GRIS (en exploracion)
-  ! ALERTA: Arista hacia nodo 0 que ya esta GRIS. ¡CICLO DETECTADO!
-Resultado final: ¡Se ha DETECTADO un ciclo en el grafo dirigido!
