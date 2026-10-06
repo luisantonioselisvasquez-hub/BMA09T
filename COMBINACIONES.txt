@@ -1,0 +1,59 @@
+COMBINACIONES
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 20
+
+int n, k;
+int soluciones[MAX];
+long contador = 0;
+
+void imprimir(void)
+{
+    int i;
+    contador++;
+    printf("%4ld: { ", contador);
+    for (i = 0; i < k; i++) {
+        printf("%d ", soluciones[i]);
+    }
+    printf("}\n");
+}
+
+void combinar(int posicion, int inicio)
+{
+    int i;
+
+    if (posicion == k) {         
+        imprimir();
+        return;
+    }
+
+    for (i = inicio; i <= n - (k - posicion) + 1; i++) {
+        soluciones[posicion] = i;            /* elegir */
+        combinar(posicion + 1, i + 1); /* explorar */
+
+    }
+}
+
+int main(void)
+{
+    printf("=== COMBINACIONES ===\n\n");
+    printf("Ingrese n (1 a %d): ", MAX);
+    scanf("%d", &n);
+    printf("Ingrese k (1 a n): ");
+    scanf("%d", &k);
+
+    if (n < 1 || n > MAX || k < 1 || k > n) {
+        printf("\nDatos invalidos.\n");
+        system("pause");
+        return 1;
+    }
+
+    printf("\nCombinaciones de %d elementos tomados de %d:\n\n", n, k);
+    combinar(0, 1);
+    printf("\nTotal de combinaciones: %ld\n", contador);
+    printf("\n");
+    system("pause");
+    return 0;
+}
