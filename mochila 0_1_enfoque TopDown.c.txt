@@ -1,0 +1,54 @@
+//mochila 0_1 Implementación en C (Top-Down)
+
+#include <stdio.h>
+#include <string.h>   // para memset
+
+#define MAX_N 100
+#define MAX_W 1000
+
+// Tabla de memoización inicializada en -1 (estado no calculado)
+int memo[MAX_N + 1][MAX_W + 1];
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+// Función recursiva con memoización
+int mochilaTD(int i, int w, int peso[], int valor[]) {
+    // Caso base
+    if (i == 0 || w == 0)
+        return 0;
+
+    // Si ya calculamos este subproblema, lo devolvemos
+    if (memo[i][w] != -1)
+        return memo[i][w];
+
+    // Si el objeto no cabe, lo ignoramos
+    if (peso[i - 1] > w) {
+        memo[i][w] = mochilaTD(i - 1, w, peso, valor);
+    } else {
+        // Elegimos el mejor entre no tomarlo o tomarlo
+        int no_tomar = mochilaTD(i - 1, w, peso, valor);
+        int tomar    = valor[i - 1] + mochilaTD(i - 1, w - peso[i - 1], peso, valor);
+        memo[i][w] = max(no_tomar, tomar);
+    }
+
+    return memo[i][w];
+}
+
+int main() {
+    int valor[] = {60, 100, 120};
+    int peso[]  = {10, 20, 30};
+    int W = 50;
+    int n = sizeof(valor) / sizeof(valor[0]);
+
+    // Inicializar memo en -1
+    memset(memo, -1, sizeof(memo));
+
+    printf("Valor máximo (Top-Down): %d\n", mochilaTD(n, W, peso, valor));
+
+    return 0;
+}
+/*Salida esperada
+text
+Valor máximo (Top-Down): 220*/

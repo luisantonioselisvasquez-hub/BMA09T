@@ -1,0 +1,87 @@
+//SUBSECUENCIA COMUN MAS LARGA (LCS) ENFOQUE BOTTON UP
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 100  // Tamaño máximo de las cadenas
+
+// Función para obtener el máximo de dos números
+int maximo(int a, int b) {
+    if (a > b) return a;
+    return b;
+}
+
+// Función principal que calcula la LCS
+int lcs(char cadena1[], char cadena2[]) {
+    int n = strlen(cadena1);  // Longitud de la primera cadena
+    int m = strlen(cadena2);  // Longitud de la segunda cadena
+    int tabla[MAX][MAX];      // Tabla para programación dinámica
+    int i, j;
+    
+    // PASO 1: Inicializar la primera fila y columna con 0
+    // (representa el caso de comparar con una cadena vacía)
+    for (i = 0; i <= n; i++) {
+        tabla[i][0] = 0;
+    }
+    for (j = 0; j <= m; j++) {
+        tabla[0][j] = 0;
+    }
+    
+    // PASO 2: Llenar la tabla celda por celda
+    for (i = 1; i <= n; i++) {
+        for (j = 1; j <= m; j++) {
+            
+            // Comparamos caracteres (i-1 y j-1 porque C empieza en 0)
+            if (cadena1[i - 1] == cadena2[j - 1]) {
+                // Si son iguales, sumamos 1 al valor diagonal
+                tabla[i][j] = tabla[i - 1][j - 1] + 1;
+            } else {
+                // Si no, tomamos el mayor de arriba o izquierda
+                tabla[i][j] = maximo(tabla[i - 1][j], tabla[i][j - 1]);
+            }
+        }
+    }
+    
+    // PASO 3 (OPCIONAL): Mostrar la tabla para que se entienda mejor
+    printf("\n--- Tabla de Programacion Dinamica ---\n\n");
+    printf("      ");
+    for (j = 0; j <= m; j++) {
+        if (j == 0) printf("  ");
+        else printf("  %c", cadena2[j - 1]);
+    }
+    printf("\n");
+    
+    for (i = 0; i <= n; i++) {
+        if (i == 0) printf("   ");
+        else printf(" %c ", cadena1[i - 1]);
+        
+        for (j = 0; j <= m; j++) {
+            printf("%3d", tabla[i][j]);
+        }
+        printf("\n");
+    }
+    
+    // La respuesta está en la esquina inferior derecha
+    return tabla[n][m];
+}
+
+int main() {
+    char cadena1[MAX];
+    char cadena2[MAX];
+    int longitud;
+    
+    printf("====================================\n");
+    printf(" SUBSECUENCIA COMUN MAS LARGA (LCS)\n");
+    printf("====================================\n\n");
+    
+    printf("Ingrese la primera cadena: ");
+    scanf("%s", cadena1);
+    
+    printf("Ingrese la segunda cadena: ");
+    scanf("%s", cadena2);
+    
+    longitud = lcs(cadena1, cadena2);
+    
+    printf("\nLa longitud de la LCS es: %d\n", longitud);
+    
+    return 0;
+}
