@@ -1,0 +1,57 @@
+INFORME TÉCNICO OFICIAL: ALGORITMOS EN GRAFOS
+RECORRIDOS, CONECTIVIDAD Y CICLOS EN DEV-C++
+Grupo 5 - Asignatura de Estructuras de Datos y Algoritmos
+Entregable de la Sexta Semana (Demostración Teórica y Salida de Ejecución)
+1. Marco Teórico y Representación en C++
+Un grafo G = (V, E) representa un conjunto de vértices V y aristas E. En C++ para Dev-C++, la representación óptima en memoria es la Lista de Adyacencia implementada con std::vector<std::vector<int>>, asegurando una eficiencia espacial de O(|V| + |E|).
+2. Análisis Formal de Complejidad Computacional
+Mediante el Lema del Apretón de Manos, la suma de los grados de todos los vértices satisface sum(deg(v)) = 2|E|. Por tanto, tanto BFS como DFS procesan cada vértice en O(1) y examinan cada arista una sola vez, logrando una complejidad temporal óptima de O(|V| + |E|).
+3. Demostración de Ejecución y Traza de Consola en Dev-C++
+Cumpliendo con la regla del Numeral 2 de la Guía Oficial, a continuación se presentan las capturas e impresiones directas de la consola tras presionar F11 en Dev-C++:
+========================================================
+  GRUPO 5: ALGORITMOS EN GRAFOS EN DEV-C++ (C++11/17)
+========================================================
+
+--- 1. RECORRIDOS EN GRAFO CONEXO ---
+Orden de recorrido BFS por niveles: 0 1 2 3 4 5 
+Orden de recorrido DFS por ramas: 0 1 3 4 5 2 
+
+--- 2. CONECTIVIDAD Y COMPONENTES CONEXAS ---
+Componentes Conexas encontradas:
+  Componente 1: [ 0 1 ]
+  Componente 2: [ 2 3 ]
+  Componente 3: [ 4 ]
+Total de componentes conexas: 3
+
+--- 3. DETECCIÓN DE CICLOS EN GRAFO DIRIGIDO ---
+  -> Nodo 0 pasa a estado GRIS (en exploracion)
+  -> Evaluando vecino 1 (estado BLANCO, sin visitar)...
+  -> Nodo 1 pasa a estado GRIS (en exploracion)
+  -> Evaluando vecino 2 (estado BLANCO, sin visitar)...
+  -> Nodo 2 pasa a estado GRIS (en exploracion)
+  ! ALERTA: Arista hacia nodo 0 que ya esta GRIS. ¡CICLO DETECTADO!
+
+Resultado final: ¡Se ha DETECTADO un ciclo en el grafo dirigido!
+========================================================
+  GRUPO 5: ALGORITMOS EN GRAFOS EN DEV-C++ (C++11/17)
+========================================================
+
+--- 1. RECORRIDOS EN GRAFO CONEXO ---
+Orden de recorrido BFS por niveles: 0 1 2 3 4 5 
+Orden de recorrido DFS por ramas: 0 1 3 4 5 2 
+
+--- 2. CONECTIVIDAD Y COMPONENTES CONEXAS ---
+Componentes Conexas encontradas:
+  Componente 1: [ 0 1 ]
+  Componente 2: [ 2 3 ]
+  Componente 3: [ 4 ]
+Total de componentes conexas: 3
+
+--- 3. DETECCIÓN DE CICLOS EN GRAFO DIRIGIDO ---
+  -> Nodo 0 pasa a estado GRIS (en exploracion)
+  -> Evaluando vecino 1 (estado BLANCO, sin visitar)...
+  -> Nodo 1 pasa a estado GRIS (en exploracion)
+  -> Evaluando vecino 2 (estado BLANCO, sin visitar)...
+  -> Nodo 2 pasa a estado GRIS (en exploracion)
+  ! ALERTA: Arista hacia nodo 0 que ya esta GRIS. ¡CICLO DETECTADO!
+Resultado final: ¡Se ha DETECTADO un ciclo en el grafo dirigido!
